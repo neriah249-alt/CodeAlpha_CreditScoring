@@ -1,4 +1,105 @@
 """
+Script de reparation complet - Credit Scoring Model
+Repare le CSV, les fichiers .pkl, et corrige les erreurs de syntaxe
+"""
+
+import os
+import pickle
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+
+print("=" * 60)
+print("🔧 REPARATION DU PROJET CREDIT SCORING")
+print("=" * 60)
+
+# ============================================
+# 1. REPARER LE CSV
+# ============================================
+print("\n📥 Telechargement du dataset German Credit...")
+url = "https://archive.ics.uci.edu/ml/machine-learning-databases/statlog/german/german.data"
+columns = [
+    'status', 'duration', 'credit_history', 'purpose', 'credit_amount',
+    'savings', 'employment', 'installment_rate', 'personal_status', 'other_debtors',
+    'residence_since', 'property', 'age', 'other_installments', 'housing',
+    'num_credits', 'job', 'num_dependents', 'telephone', 'foreign_worker', 'target'
+]
+
+df = pd.read_csv(url, sep=' ', header=None, names=columns)
+df['target'] = df['target'].map({1: 0, 2: 1})
+
+print(f"   Shape: {df.shape}")
+print(f"   NaN: {df.isnull().sum().sum()}")
+
+os.makedirs('data', exist_ok=True)
+df.to_csv('data/german_credit.csv', index=False)
+print("   ✅ data/german_credit.csv repare")
+
+# ============================================
+# 2. GENERER LES MODELES
+# ============================================
+print("\n🤖 Generation des modeles...")
+
+X = df.drop('target', axis=1)
+y = df['target']
+
+categorical_cols = X.select_dtypes(include=['object']).columns.tolist()
+label_encoders = {}
+for col in categorical_cols:
+    le = LabelEncoder()
+    X[col] = le.fit_transform(X[col])
+    label_encoders[col] = le
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+os.makedirs('models', exist_ok=True)
+
+# Logistic Regression
+lr = LogisticRegression(max_iter=1000, random_state=42)
+lr.fit(X_train_scaled, y_train)
+with open('models/logistic_regression.pkl', 'wb') as f:
+    pickle.dump(lr, f)
+print("   ✅ models/logistic_regression.pkl")
+
+# Decision Tree
+dt = DecisionTreeClassifier(max_depth=10, random_state=42)
+dt.fit(X_train, y_train)
+with open('models/decision_tree.pkl', 'wb') as f:
+    pickle.dump(dt, f)
+print("   ✅ models/decision_tree.pkl")
+
+# Random Forest
+rf = RandomForestClassifier(n_estimators=100, max_depth=10, random_state=42)
+rf.fit(X_train, y_train)
+with open('models/random_forest.pkl', 'wb') as f:
+    pickle.dump(rf, f)
+print("   ✅ models/random_forest.pkl")
+
+# Preprocesseurs
+with open('models/scaler.pkl', 'wb') as f:
+    pickle.dump(scaler, f)
+print("   ✅ models/scaler.pkl")
+
+with open('models/label_encoders.pkl', 'wb') as f:
+    pickle.dump(label_encoders, f)
+print("   ✅ models/label_encoders.pkl")
+
+# ============================================
+# 3. CORRIGER evaluate.py
+# ============================================
+print("\n🔧 Correction de src/evaluate.py...")
+
+evaluate_code = '''"""
 Module d'evaluation pour le Credit Scoring Model.
 Calcule Accuracy, Precision, Recall, F1-Score, ROC-AUC.
 """
@@ -44,7 +145,7 @@ def evaluate_all_models(models, X_test_scaled, X_test, y_test, scaler=None):
         metrics = evaluate_model(model, X_test, y_test, name, use_scaled, scaler)
         results.append(metrics)
         
-        print(f"\\n📊 {name}:")
+        print(f"\\\\n📊 {name}:")
         print(f"   Accuracy:  {metrics['Accuracy']:.4f}")
         print(f"   Precision: {metrics['Precision']:.4f}")
         print(f"   Recall:    {metrics['Recall']:.4f}")
@@ -52,7 +153,6 @@ def evaluate_all_models(models, X_test_scaled, X_test, y_test, scaler=None):
         print(f"   ROC-AUC:   {metrics['ROC-AUC']:.4f}")
     
     return pd.DataFrame([{k: v for k, v in r.items() if k not in ['y_pred', 'y_prob']} for r in results])
-    
 
 
 def plot_confusion_matrices(results_dict, y_test, save_path='results/confusion_matrices.png'):
@@ -74,7 +174,7 @@ def plot_confusion_matrices(results_dict, y_test, save_path='results/confusion_m
     plt.tight_layout()
     plt.savefig(save_path, dpi=150, bbox_inches='tight')
     print(f"✅ Matrices de confusion sauvegardees: {save_path}")
-    plt.close()
+    plt.show()
 
 
 def plot_roc_curves(results_dict, y_test, save_path='results/roc_curves.png'):
@@ -94,7 +194,7 @@ def plot_roc_curves(results_dict, y_test, save_path='results/roc_curves.png'):
     plt.grid(True, alpha=0.3)
     plt.savefig(save_path, dpi=150, bbox_inches='tight')
     print(f"✅ Courbes ROC sauvegardees: {save_path}")
-    plt.close()
+    plt.show()
 
 
 if __name__ == '__main__':
@@ -112,5 +212,20 @@ if __name__ == '__main__':
             models[name.replace('_', ' ').title()] = pickle.load(f)
     
     results = evaluate_all_models(models, X_test_s, X_test, y_test, scaler)
-    print("\\n📋 Tableau recapitulatif:")
+    print("\\\\n📋 Tableau recapitulatif:")
     print(results.to_string(index=False))
+'''
+
+with open('src/evaluate.py', 'w', encoding='utf-8') as f:
+    f.write(evaluate_code)
+print("   ✅ src/evaluate.py corrige")
+
+# ============================================
+# 4. VERIFICATION FINALE
+# ============================================
+print("\n" + "=" * 60)
+print("✅ REPARATION TERMINEE!")
+print("=" * 60)
+print("\nVous pouvez maintenant executer:")
+print("   python main.py")
+print("   streamlit run app.py")

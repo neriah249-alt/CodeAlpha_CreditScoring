@@ -17,4 +17,12 @@ Ce projet implémente un **modèle de scoring crédit** qui prédit la solvabili
 - 20 features
 - Cible binaire : Bon crédit (0) / Mauvais crédit (1)
 
+## 🚀 Pour les testeurs
+
+### Installation rapide
+```bash
+git clone https://github.com/VOTRE_USERNAME/CodeAlpha_CreditScoring.git
+cd CodeAlpha_CreditScoring
+pip install -r requirements.txt
+
 ## 🗂️ Structure du projet

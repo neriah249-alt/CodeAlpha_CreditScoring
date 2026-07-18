@@ -1,12 +1,6 @@
-
----
-
-## 📄 `src/preprocess.py`
-
-```python
 """
-Module de prétraitement pour le Credit Scoring Model.
-Gère le chargement, le nettoyage, l'encodage et la normalisation des données.
+Module de pretraitement pour le Credit Scoring Model.
+Gere le chargement, le nettoyage, l'encodage et la normalisation des donnees.
 """
 
 import pandas as pd
@@ -18,24 +12,29 @@ import pickle
 
 def load_data(filepath='data/german_credit.csv'):
     """Charge le dataset German Credit."""
-    df = pd.read_csv(filepath)
-    # Convert target: 1->0 (good), 2->1 (bad)
+    url = "https://archive.ics.uci.edu/ml/machine-learning-databases/statlog/german/german.data"
+    columns = [
+        'status', 'duration', 'credit_history', 'purpose', 'credit_amount',
+        'savings', 'employment', 'installment_rate', 'personal_status', 'other_debtors',
+        'residence_since', 'property', 'age', 'other_installments', 'housing',
+        'num_credits', 'job', 'num_dependents', 'telephone', 'foreign_worker', 'target'
+    ]
+    df = pd.read_csv(url, sep=' ', header=None, names=columns)
     df['target'] = df['target'].map({1: 0, 2: 1})
+    df.to_csv(filepath, index=False)  # Sauvegarde le CSV propre
     return df
 
-
 def clean_data(df):
-    """Nettoie les données (vérifie les valeurs manquantes, doublons)."""
+    """Nettoie les donnees."""
     print(f"Shape initial: {df.shape}")
     print(f"Valeurs manquantes: {df.isnull().sum().sum()}")
     print(f"Doublons: {df.duplicated().sum()}")
-    
     df = df.drop_duplicates()
     return df
 
 
 def encode_categorical(df, fit=True, encoders=None):
-    """Encode les variables catégorielles avec LabelEncoder."""
+    """Encode les variables categorielles."""
     df = df.copy()
     categorical_cols = df.select_dtypes(include=['object']).columns.tolist()
     
@@ -54,7 +53,7 @@ def encode_categorical(df, fit=True, encoders=None):
 
 
 def split_and_scale(df, target_col='target', test_size=0.2, random_state=42, fit=True, scaler=None):
-    """Sépare les features/target et normalise."""
+    """Separe les features/target et normalise."""
     X = df.drop(target_col, axis=1)
     y = df[target_col]
     
@@ -85,7 +84,6 @@ def get_feature_names():
 
 
 if __name__ == '__main__':
-    # Test du pipeline
     df = load_data()
     df = clean_data(df)
     df, encoders = encode_categorical(df)

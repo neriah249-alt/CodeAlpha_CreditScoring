@@ -1,6 +1,5 @@
 """
 Module de pretraitement pour le Credit Scoring Model.
-Gere le chargement, le nettoyage, l'encodage et la normalisation des donnees.
 """
 
 import pandas as pd
@@ -19,10 +18,12 @@ def load_data(filepath='data/german_credit.csv'):
         'residence_since', 'property', 'age', 'other_installments', 'housing',
         'num_credits', 'job', 'num_dependents', 'telephone', 'foreign_worker', 'target'
     ]
+    
     df = pd.read_csv(url, sep=' ', header=None, names=columns)
     df['target'] = df['target'].map({1: 0, 2: 1})
-    df.to_csv(filepath, index=False)  # Sauvegarde le CSV propre
+    df.to_csv(filepath, index=False)
     return df
+
 
 def clean_data(df):
     """Nettoie les donnees."""
@@ -70,17 +71,6 @@ def split_and_scale(df, target_col='target', test_size=0.2, random_state=42, fit
         X_train_scaled = scaler.transform(X_train)
         X_test_scaled = scaler.transform(X_test)
         return X_train_scaled, X_test_scaled, y_train, y_test, X_train, X_test
-
-
-def get_feature_names():
-    """Retourne les noms des features."""
-    return [
-        'status', 'duration', 'credit_history', 'purpose', 'credit_amount',
-        'savings', 'employment', 'installment_rate', 'personal_status', 
-        'other_debtors', 'residence_since', 'property', 'age', 
-        'other_installments', 'housing', 'num_credits', 'job', 
-        'num_dependents', 'telephone', 'foreign_worker'
-    ]
 
 
 if __name__ == '__main__':

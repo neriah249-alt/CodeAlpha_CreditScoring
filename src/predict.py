@@ -1,6 +1,5 @@
 """
-Module de prédiction pour le Credit Scoring Model.
-Permet de prédire la solvabilité sur de nouvelles données.
+Module de prediction pour le Credit Scoring Model.
 """
 
 import pandas as pd
@@ -9,14 +8,14 @@ import pickle
 
 
 def load_model(model_path='models/random_forest.pkl'):
-    """Charge un modèle sauvegardé."""
+    """Charge un modele sauvegarde."""
     with open(model_path, 'rb') as f:
         model = pickle.load(f)
     return model
 
 
 def load_preprocessors(scaler_path='models/scaler.pkl', encoders_path='models/label_encoders.pkl'):
-    """Charge les préprocesseurs."""
+    """Charge les preprocesseurs."""
     with open(scaler_path, 'rb') as f:
         scaler = pickle.load(f)
     with open(encoders_path, 'rb') as f:
@@ -26,17 +25,17 @@ def load_preprocessors(scaler_path='models/scaler.pkl', encoders_path='models/la
 
 def predict_credit_risk(input_data, model, scaler, encoders, use_scaled=False):
     """
-    Prédit le risque de crédit pour de nouvelles données.
+    Predic le risque de credit pour de nouvelles donnees.
     
     Args:
-        input_data: dict ou DataFrame avec les features
-        model: modèle entraîné
+        input_data: dict ou DataFrame avec les 20 features exactes
+        model: modele entraine
         scaler: StandardScaler
         encoders: dict de LabelEncoders
         use_scaled: True pour Logistic Regression
     
     Returns:
-        dict avec prédiction et probabilité
+        dict avec prediction et probabilite
     """
     if isinstance(input_data, dict):
         df = pd.DataFrame([input_data])
@@ -58,7 +57,7 @@ def predict_credit_risk(input_data, model, scaler, encoders, use_scaled=False):
     
     return {
         'prediction': int(prediction),
-        'risk_label': 'Mauvais Crédit' if prediction == 1 else 'Bon Crédit',
+        'risk_label': 'Mauvais Credit' if prediction == 1 else 'Bon Credit',
         'probability_good': float(probability[0]),
         'probability_bad': float(probability[1]),
         'confidence': float(max(probability))
@@ -66,11 +65,9 @@ def predict_credit_risk(input_data, model, scaler, encoders, use_scaled=False):
 
 
 if __name__ == '__main__':
-    # Exemple de prédiction
     model = load_model('models/random_forest.pkl')
     scaler, encoders = load_preprocessors()
     
-    # Exemple de nouvelle demande de crédit
     new_client = {
         'status': 'A11',
         'duration': 24,
@@ -95,8 +92,8 @@ if __name__ == '__main__':
     }
     
     result = predict_credit_risk(new_client, model, scaler, encoders)
-    print("\n🔮 Résultat de la prédiction:")
+    print("\nResultat de la prediction:")
     print(f"   Risque: {result['risk_label']}")
-    print(f"   Probabilité bon crédit: {result['probability_good']:.2%}")
-    print(f"   Probabilité mauvais crédit: {result['probability_bad']:.2%}")
+    print(f"   Probabilite bon credit: {result['probability_good']:.2%}")
+    print(f"   Probabilite mauvais credit: {result['probability_bad']:.2%}")
     print(f"   Confiance: {result['confidence']:.2%}")

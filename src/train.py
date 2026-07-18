@@ -1,6 +1,5 @@
 """
-Module d'entraînement pour le Credit Scoring Model.
-Entraîne Logistic Regression, Decision Tree et Random Forest.
+Module d'entrainement pour le Credit Scoring Model.
 """
 
 from sklearn.linear_model import LogisticRegression
@@ -10,29 +9,29 @@ import pickle
 
 
 def train_logistic_regression(X_train, y_train, **kwargs):
-    """Entraîne une Régression Logistique."""
+    """Entraine une Regression Logistique."""
     model = LogisticRegression(max_iter=1000, random_state=42, **kwargs)
     model.fit(X_train, y_train)
     return model
 
 
 def train_decision_tree(X_train, y_train, **kwargs):
-    """Entraîne un Arbre de Décision."""
+    """Entraine un Arbre de Decision."""
     model = DecisionTreeClassifier(max_depth=10, random_state=42, **kwargs)
     model.fit(X_train, y_train)
     return model
 
 
 def train_random_forest(X_train, y_train, **kwargs):
-    """Entraîne une Forêt Aléatoire."""
+    """Entraine une Foret Aleatoire."""
     model = RandomForestClassifier(n_estimators=100, max_depth=10, random_state=42, **kwargs)
     model.fit(X_train, y_train)
     return model
 
 
 def train_all_models(X_train_scaled, X_train, y_train):
-    """Entraîne les 3 modèles et les retourne."""
-    print("🔄 Entraînement des modèles...")
+    """Entraine les 3 modeles et les retourne."""
+    print("Entrainement des modeles...")
     
     models = {
         'Logistic Regression': train_logistic_regression(X_train_scaled, y_train),
@@ -40,17 +39,17 @@ def train_all_models(X_train_scaled, X_train, y_train):
         'Random Forest': train_random_forest(X_train, y_train)
     }
     
-    print("✅ Tous les modèles entraînés!")
+    print("Tous les modeles entraines!")
     return models
 
 
 def save_models(models, filepath_prefix='models/'):
-    """Sauvegarde les modèles entraînés."""
+    """Sauvegarde les modeles entraines."""
     for name, model in models.items():
         filename = name.lower().replace(' ', '_') + '.pkl'
         with open(f'{filepath_prefix}{filename}', 'wb') as f:
             pickle.dump(model, f)
-    print("✅ Modèles sauvegardés!")
+    print("Modeles sauvegardes!")
 
 
 if __name__ == '__main__':

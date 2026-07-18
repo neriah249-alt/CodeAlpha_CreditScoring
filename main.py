@@ -1,6 +1,6 @@
 """
 Pipeline principal du Credit Scoring Model.
-Exécute le prétraitement, l'entraînement et l'évaluation.
+Execute le pretraitement, l'entrainement et l'evaluation.
 """
 
 import sys
@@ -15,42 +15,38 @@ import pickle
 
 def main():
     print("=" * 60)
-    print("🏦 CREDIT SCORING MODEL - PIPELINE COMPLET")
+    print("CREDIT SCORING MODEL - PIPELINE COMPLET")
     print("=" * 60)
     
-    # 1. Chargement et prétraitement
-    print("\n📥 Étape 1: Chargement des données...")
+    print("\nEtape 1: Chargement des donnees...")
     df = load_data('data/german_credit.csv')
     df = clean_data(df)
     df, encoders = encode_categorical(df)
     
-    print("\n🔧 Étape 2: Split et normalisation...")
+    print("\nEtape 2: Split et normalisation...")
     X_train_s, X_test_s, y_train, y_test, scaler, X_train, X_test = split_and_scale(df)
     
-    # Sauvegarde des préprocesseurs
+    os.makedirs('models', exist_ok=True)
     with open('models/scaler.pkl', 'wb') as f:
         pickle.dump(scaler, f)
     with open('models/label_encoders.pkl', 'wb') as f:
         pickle.dump(encoders, f)
     
-    # 2. Entraînement
-    print("\n🤖 Étape 3: Entraînement des modèles...")
+    print("\nEtape 3: Entrainement des modeles...")
     models = train_all_models(X_train_s, X_train, y_train)
     save_models(models)
     
-    # 3. Évaluation
-    print("\n📊 Étape 4: Évaluation des modèles...")
+    print("\nEtape 4: Evaluation des modeles...")
     results_df = evaluate_all_models(models, X_test_s, X_test, y_test, scaler)
     
     print("\n" + "=" * 60)
-    print("📋 TABLEAU RÉCAPITULATIF")
+    print("TABLEAU RECAPITULATIF")
     print("=" * 60)
     print(results_df.to_string(index=False))
     
-    # 4. Visualisations
-    print("\n📈 Étape 5: Génération des visualisations...")
+    print("\nEtape 5: Generation des visualisations...")
+    os.makedirs('results', exist_ok=True)
     
-    # Reconstruire results_dict pour les plots
     results_dict = {}
     for name, model in models.items():
         use_scaled = (name == 'Logistic Regression')
@@ -66,9 +62,9 @@ def main():
     plot_confusion_matrices(results_dict, y_test)
     plot_roc_curves(results_dict, y_test)
     
-    print("\n✅ Pipeline terminé avec succès!")
-    print("📁 Modèles sauvegardés dans /models")
-    print("📁 Visualisations sauvegardées dans /results")
+    print("\nPipeline termine avec succes!")
+    print("Modeles sauvegardes dans /models")
+    print("Visualisations sauvegardees dans /results")
 
 
 if __name__ == '__main__':

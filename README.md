@@ -1,28 +1,21 @@
-# 🏦 Credit Scoring Model - CodeAlpha
+# Credit Scoring Model - CodeAlpha
 
-Projet de stage Machine Learning : Prédiction de la solvabilité bancaire.
+Projet de stage Machine Learning : Prediction de la solvabilite bancaire.
 
-## 📋 Description
+## Description
 
-Ce projet implémente un **modèle de scoring crédit** qui prédit la solvabilité d'un individu à partir de ses données financières. Trois algorithmes de classification sont comparés :
+Modele de scoring credit avec 3 algorithmes :
+- Regression Logistique
+- Arbre de Decision
+- Random Forest
 
-- **Régression Logistique**
-- **Arbre de Décision**
-- **Random Forest**
+## Dataset
 
-## 📊 Dataset
+German Credit Dataset (UCI) - 1000 instances, 20 features
 
-**German Credit Dataset** (UCI Machine Learning Repository)
-- 1000 instances
-- 20 features
-- Cible binaire : Bon crédit (0) / Mauvais crédit (1)
+## Installation
 
-## 🚀 Pour les testeurs
-
-### Installation rapide
 ```bash
 git clone https://github.com/VOTRE_USERNAME/CodeAlpha_CreditScoring.git
 cd CodeAlpha_CreditScoring
 pip install -r requirements.txt
-
-## 🗂️ Structure du projet

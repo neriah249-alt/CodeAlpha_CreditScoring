@@ -1,6 +1,5 @@
 """
 Module d'evaluation pour le Credit Scoring Model.
-Calcule Accuracy, Precision, Recall, F1-Score, ROC-AUC.
 """
 
 import pandas as pd
@@ -9,6 +8,8 @@ from sklearn.metrics import (
     accuracy_score, precision_score, recall_score, 
     f1_score, roc_auc_score, confusion_matrix
 )
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -44,7 +45,7 @@ def evaluate_all_models(models, X_test_scaled, X_test, y_test, scaler=None):
         metrics = evaluate_model(model, X_test, y_test, name, use_scaled, scaler)
         results.append(metrics)
         
-        print(f"\\n📊 {name}:")
+        print(f"\n{name}:")
         print(f"   Accuracy:  {metrics['Accuracy']:.4f}")
         print(f"   Precision: {metrics['Precision']:.4f}")
         print(f"   Recall:    {metrics['Recall']:.4f}")
@@ -52,7 +53,6 @@ def evaluate_all_models(models, X_test_scaled, X_test, y_test, scaler=None):
         print(f"   ROC-AUC:   {metrics['ROC-AUC']:.4f}")
     
     return pd.DataFrame([{k: v for k, v in r.items() if k not in ['y_pred', 'y_prob']} for r in results])
-    
 
 
 def plot_confusion_matrices(results_dict, y_test, save_path='results/confusion_matrices.png'):
@@ -73,8 +73,8 @@ def plot_confusion_matrices(results_dict, y_test, save_path='results/confusion_m
     
     plt.tight_layout()
     plt.savefig(save_path, dpi=150, bbox_inches='tight')
-    print(f"✅ Matrices de confusion sauvegardees: {save_path}")
     plt.close()
+    print(f"Matrices de confusion sauvegardees: {save_path}")
 
 
 def plot_roc_curves(results_dict, y_test, save_path='results/roc_curves.png'):
@@ -93,8 +93,8 @@ def plot_roc_curves(results_dict, y_test, save_path='results/roc_curves.png'):
     plt.legend(loc='lower right')
     plt.grid(True, alpha=0.3)
     plt.savefig(save_path, dpi=150, bbox_inches='tight')
-    print(f"✅ Courbes ROC sauvegardees: {save_path}")
     plt.close()
+    print(f"Courbes ROC sauvegardees: {save_path}")
 
 
 if __name__ == '__main__':
@@ -112,5 +112,5 @@ if __name__ == '__main__':
             models[name.replace('_', ' ').title()] = pickle.load(f)
     
     results = evaluate_all_models(models, X_test_s, X_test, y_test, scaler)
-    print("\\n📋 Tableau recapitulatif:")
+    print("\nTableau recapitulatif:")
     print(results.to_string(index=False))

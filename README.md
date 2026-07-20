@@ -33,6 +33,8 @@ Ce projet implémente un **modèle de scoring crédit** qui évalue la solvabili
 ---
 
 ## 🗂️ Structure du projet
+
+```texte
 CodeAlpha_CreditScoring/
 ├── 📁 data/
 │   └── german_credit.csv              # Dataset
@@ -57,7 +59,7 @@ CodeAlpha_CreditScoring/
 ├── 📄 app.py                          # Interface Streamlit
 ├── 📄 requirements.txt                # Dépendances
 └── 📄 README.md                       # Documentation
-
+```
 ---
 
 ## 🛠️ Technologies utilisées
@@ -168,6 +170,7 @@ print(f"Décision : {result['risk_label']}")
 print(f"Confiance : {result['confidence']:.1%}")
 
 📈 Résultats des modèles
+
 | Modèle              | Accuracy  | Precision | Recall    | F1-Score  | **ROC-AUC** |
 | ------------------- | --------- | --------- | --------- | --------- | ----------- |
 | Logistic Regression | 76.5%     | 62.8%     | 53.3%     | 57.7%     | 79.1%       |
@@ -194,11 +197,11 @@ print(f"Confiance : {result['confidence']:.1%}")
 
 🎓 Apprentissages
 Ce projet m'a permis de maîtriser :
-✅ Le prétraitement de données structurées
-✅ L'entraînement et la comparaison de modèles de classification
-✅ L'évaluation avec des métriques adaptées (Precision, Recall, F1, ROC-AUC)
-✅ Le déploiement d'une application ML avec Streamlit
-✅ L'intégration de règles métier pour des décisions fiables
+✅ Le prétraitement de données structurées.
+✅ L'entraînement et la comparaison de modèles de classification.
+✅ L'évaluation avec des métriques adaptées (Precision, Recall, F1, ROC-AUC).
+✅ Le déploiement d'une application ML avec Streamlit.
+✅ L'intégration de règles métier pour des décisions fiables.
 
 
 📝 Auteur

@@ -58,7 +58,6 @@ CodeAlpha_CreditScoring/
 ├── 📄 requirements.txt                # Dépendances
 └── 📄 README.md                       # Documentation
 
-
 ---
 
 ## 🛠️ Technologies utilisées
